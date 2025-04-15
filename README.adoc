@@ -1,0 +1,210 @@
+= oracle
+
+== What is this?
+
+`oracle` is a collection of small random text generators
+I made primarily for use with the link:https://espanso.org/[Espanso] autocompletion
+tool and for playing solo tabletop games. I've decided to
+to share the code of this program on Github in the hopes
+that someone else will also find it useful. Each module can
+be installed as it's own standalone executable. The rest of this
+readme explains how to use each module of the program.
+
+Have fun!
+
+==== Installing
+
+To install `oracle` or it's submodules either download the
+binaries from the release page or, if you have Go installed,
+simply follow the install command for each module.
+
+[source, bash]
+go install github.com/via-dev/oracle@latest
+
+=== `solo`: tools for solo tabletop
+[source, bash]
+go install github.com/via-dev/oracle/cmd/solo@latest
+
+The `solo` module contains subcommands that act as play-aids to
+digital solo tabletop gaming. The current commands are:
+
+* `dice`: a basic dice roller. Cannot (yet) do math, roll non-standard dice
+  or do special functions such as exploding or keeping.
+* `motif`: emulator for the the Motif SRD engine.
+* `table`: setup your own lua files with random tables and roll on them.
+* `yesno`: emulator for the Recluse yes or no oracle for binary answers.
+
+In order to use the `table` command you must setup your own lua table files in
+the following locations:
+
+* *Windows*: `%USERPROFILE%\AppData\Roaming\oracle\tables`
+* *Unix & Mac*: `~/.config/oracle/tables`
+
+Your lua files must contain at least one global function called `main`.
+You can then run `tables <filename>` to execute the code contained in
+the `main` function of that file. You can add more functions to your file
+and call them with `tables <filename>:<function>`. Below is an example of
+what a lua file might look like.
+
+[source, lua]
+----
+local combat = {}
+
+-- Simple d6 table.
+combat.twist = {
+	"Reinforce",
+	"Change",
+	"Disadvantage enemy",
+	"Advantage self",
+	"Bargain",
+	"Trick",
+}
+
+-- Weighted 3d6 table.
+combat.tactic = {}
+combat.tactic[3] = "Panic"
+combat.tactic[4] = "Surrender"
+combat.tactic[5] = "Disengage"
+combat.tactic[6] = "Retreat"
+combat.tactic[7] = "Guard"
+combat.tactic[8] = "Probe"
+combat.tactic[9] = "Wear down"
+combat.tactic[10] = "Standoff"
+combat.tactic[11] = "Balance"
+combat.tactic[12] = "Feint"
+combat.tactic[13] = "Reverse"
+combat.tactic[14] = "Taunt"
+combat.tactic[15] = "Press"
+combat.tactic[16] = "Strike"
+combat.tactic[17] = "Charge"
+combat.tactic[18] = "Frenzy"
+
+function main()
+-- Common dice functions are available
+	local twi = d6(1)
+	local tac = d6(3)
+	local new = d6(1)
+
+	local newtac = {
+		"Same Tactic",
+		"Same Tactic",
+		"Same Tactic",
+		"New Tactic: " .. combat.tactic[tac],
+		"New Tactic: " .. combat.tactic[tac],
+		"Twist: " .. combat.twist[twi],
+	}
+
+-- You must print your results to stdout
+	print(newtac[new])
+end
+
+function twist()
+	local twi = d6(1)
+	print(combat.twist[twi])
+end
+
+function tactic()
+	local tac = d6(3)
+	print(combat.tactic[tac])
+end
+----
+
+To make rolling on tables easier I've made a few functions
+for rolling common RPG dice available to all files. They
+take only one argument which is the number of dice to be rolled.
+These are:`d3()`, `d4()`, `d6()`, `d8()`, `d10()`, `d12()`, `d20()`,
+ `d100()` and `dF()`.
+
+For a guide on how to write Lua code, please read the
+link:https://www.lua.org/pil/contents.html[Programming in Lua] guide.
+
+=== `iching`: use the I Ching for divination
+[source, bash]
+go install github.com/via-dev/oracle/cmd/iching@latest
+
+The `iching` module acts as a CLI tool for generating I Ching hexagrams.
+It generates a basic primary and secondary hexagram reading with yarrow stalk
+probabilities by default when no arguments are passed. You can pass an optional
+`hexcode` argument with the exact hexagram line numbers if you'd like to generate
+the hexagrams yourself (`878899`, `777688`, `966988`, etc).
+
+You can generate additional hexagrams with the following optional flags:
+
+* `-e, --extended`: generates a reversed hexagram and an anti-hexagram.
+* `-a, --ascending`: generates five ascending hexagrams in between the
+primary and secondary hexagrams.
+
+The `-m` or `--method` flag allows you to choose which method of casting
+this primary hexagram will be used.
+
+* `yarrow`: use yarrow stalk probabilities. The default option.
+* `coins`: use three coins probabilities.
+* `oneline`: get hexagrams with a single moving line.
+
+The `-t` or `--translation` flag allows you to choose which translation
+to use for hexagram information. A translation file is a lua file
+that contains a table with all the information text for each hexagram.
+The program will look for translation files in these locations:
+
+* *Windows*: `%USERPROFILE%\AppData\Roaming\oracle\iching`
+* *Unix & Mac*: `~/.config/oracle/iching`
+
+When creating a translation file you must populate a global `info`
+table in the following way:
+
+[source, lua]
+----
+info.author = "Translation Author"
+
+info.trigrams.earth = "Renamed Trigram Name"
+info.trigrams.heaven = "Renamed Trigram Name"
+info.trigrams.wind = "Renamed Trigram Name"
+
+info.hexagrams = {
+  {
+    name = "Hexagram 01",
+    judgement = "The hexagram judgement text",
+    image = "The image text",
+    lines = {
+      "Line 1 text",
+      "Line 2 text",
+      "Line 3 text",
+      "Line 4 text",
+      "Line 5 text",
+      "Line 6 text",
+
+      -- The seventh line is used only for hexagrams 1 and 2.
+      -- You don't have to fill it out for the other hexagrams.
+      "Line 7 text",
+    },
+  },
+  -- Repeat the section above for the other 63 hexagrams...
+}
+----
+
+You *must* fill out the data for all 64 hexagrams or
+the program will complain at you.
+
+=== `geomancer`: use Geomancy for divination
+[source, bash]
+go install github.com/via-dev/oracle/cmd/geomancer@latest
+
+Similar to the above module the `geomancer` module is a CLI
+frontend for geomancy divination in the terminal. It will
+generate a random Shield Chart when no arguments are passed.
+
+It can take four optional arguments for each of the
+Four Mothers and each one must formatted as either four
+digit binary numbers (`1101`, `1001`, `1111`, etc) or as
+four strings with either `:` and `.` characters
+(`..:.`,`:..:`,`....`, etc).
+
+=== `biblio`: random nonsense text for bibliomancy
+[source, bash]
+go install github.com/via-dev/oracle/cmd/biblio@latest
+
+The `biblio` module generates plain text "books" of random characters
+in a manner inspired by the Library of Babel project. It contains only
+two flags of note: `-f`/`--files` and `-s`/`--scribd`. The former creates books
+from a list (`book1.txt,book2.txt,book3.txt`) and the latter will create five
+books to help with Scribd's "Upload five documents to download ofr free" gimmick.

@@ -112,7 +112,7 @@ end
 To make rolling on tables easier I've made a few functions
 for rolling common RPG dice available to all files. They
 take only one argument which is the number of dice to be rolled.
-These are:`d3()`, `d4()`, `d6()`, `d8()`, `d10()`, `d12()`, `d20()`,
+These are: `d3()`, `d4()`, `d6()`, `d8()`, `d10()`, `d12()`, `d20()`,
  `d100()` and `dF()`.
 
 For a guide on how to write Lua code, please read the

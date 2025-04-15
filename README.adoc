@@ -207,4 +207,4 @@ The `biblio` module generates plain text "books" of random characters
 in a manner inspired by the Library of Babel project. It contains only
 two flags of note: `-f`/`--files` and `-s`/`--scribd`. The former creates books
 from a list (`book1.txt,book2.txt,book3.txt`) and the latter will create five
-books to help with Scribd's "Upload five documents to download ofr free" gimmick.
+books to help with Scribd's "Upload five documents to download for free" gimmick.

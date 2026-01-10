@@ -63,7 +63,7 @@ execute :: proc(args: []string) {
 		read_table(tflags.table_name)
 		os.exit(0)
 
-	case "recluse":
+	case "yesno":
 		rflags: recluseFlags
 		flags.parse_or_exit(&rflags, args)
 		odds := rflags.odds

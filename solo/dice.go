@@ -2,6 +2,15 @@ package solo
 
 import "math/rand/v2"
 
+func parseMath(input string) string {
+	output := input
+	return output
+}
+
+func shuntingYard(input string) {
+
+}
+
 func roll(num, sides int) (dice []int, res int) {
 	for i := 1; i <= num; i++ {
 		die := rand.IntN(sides) + 1

@@ -4,7 +4,7 @@
 
 `oracle` is a collection of small random text generators
 I made primarily for use with the link:https://espanso.org/[Espanso] autocompletion
-tool and for playing solo tabletop games. I've decided to
+tool and for playing solo tabletop games. I've decided
 to share the code of this program on Github in the hopes
 that someone else will also find it useful. Each module can
 be installed as it's own standalone executable. The rest of this
@@ -12,18 +12,20 @@ readme explains how to use each module of the program.
 
 Have fun!
 
-==== Installing
+=== Installing
 
 To install `oracle` or it's submodules either download the
-binaries from the release page or, if you have Go installed,
-simply follow the install command for each module.
+binaries from the release page or, if you have Odin installed,
+simply use the `odin build` command or the provided build scripts.
 
 [source, bash]
-go install github.com/via-dev/oracle@latest
+git clone https://github.com/via-dev/oracle
+cd oracle
+odin build . -o:speed
 
 === `solo`: tools for solo tabletop
 [source, bash]
-go install github.com/via-dev/oracle/cmd/solo@latest
+odin build solo -o:speed
 
 The `solo` module contains subcommands that act as play-aids to
 digital solo tabletop gaming. The current commands are:
@@ -37,8 +39,8 @@ digital solo tabletop gaming. The current commands are:
 In order to use the `table` command you must setup your own lua table files in
 the following locations:
 
-* *Windows*: `%USERPROFILE%\AppData\Roaming\oracle\tables`
-* *Unix & Mac*: `~/.config/oracle/tables`
+* *Windows*: `%USERPROFILE%\AppData\Local\oracle\tables`
+* *Linux*: `~/.config/oracle/tables`
 
 Your lua files must contain at least one global function called `main`.
 You can then run `tables <filename>` to execute the code contained in
@@ -120,7 +122,7 @@ link:https://www.lua.org/pil/contents.html[Programming in Lua] guide.
 
 === `iching`: use the I Ching for divination
 [source, bash]
-go install github.com/via-dev/oracle/cmd/iching@latest
+odin build iching -o:speed
 
 The `iching` module acts as a CLI tool for generating I Ching hexagrams.
 It generates a basic primary and secondary hexagram reading with yarrow stalk
@@ -142,69 +144,70 @@ this primary hexagram will be used.
 * `oneline`: get hexagrams with a single moving line.
 
 The `-t` or `--translation` flag allows you to choose which translation
-to use for hexagram information. A translation file is a lua file
-that contains a table with all the information text for each hexagram.
+to use for hexagram information. A translation file is a JSON, JSON5 or MJSON
+file with a `.trans` extension that contains a table with all the information
+text for each hexagram.
+
 The program will look for translation files in these locations:
 
-* *Windows*: `%USERPROFILE%\AppData\Roaming\oracle\iching`
-* *Unix & Mac*: `~/.config/oracle/iching`
+* *Windows*: `%USERPROFILE%\AppData\Local\oracle\iching`
+* *Linux*: `~/.config/oracle/iching`
 
-When creating a translation file you must populate a global `info`
-table in the following way:
+Your translation file should follow this format:
 
-[source, lua]
+[source, mjson]
 ----
-info.author = "Translation Author"
+// Using MJSON syntax
 
-info.trigrams.earth = "Renamed Trigram Name"
-info.trigrams.heaven = "Renamed Trigram Name"
-info.trigrams.wind = "Renamed Trigram Name"
+author = "Takashima Ekidan"
 
-info.hexagrams = {
-  {
-    name = "Hexagram 01",
-    judgement = "The hexagram judgement text",
-    image = "The image text",
-    lines = {
-      "Line 1 text",
-      "Line 2 text",
-      "Line 3 text",
-      "Line 4 text",
-      "Line 5 text",
-      "Line 6 text",
-
-      -- The seventh line is used only for hexagrams 1 and 2.
-      -- You don't have to fill it out for the other hexagrams.
-      "Line 7 text",
-    },
-  },
-  -- Repeat the section above for the other 63 hexagrams...
+// Write trigram names in this order
+trigrams = {
+  heaven = "Ken:  Heaven"
+  earth = "Kon: Earth"
+  lake = "Da: Pond"
+  water = "Kan: Water"
+  mountain = "Gon: Mountain"
+  fire = "Ri: Fire"
+  wind = "Son: Wind"
+  thunder = "Shin: Thunder"
 }
+
+// Array of 64 hexagrams in order
+hexagrams = [
+  {
+    name = "I.  KEN  (Heaven)"
+    judgement = "Ken is what is perfect, auspicious, useful, and constant."
+    lines = [
+      "Positive I.  Represents the obscure dragon lying hidden.  Better not move."
+      "Positive II.  The dragon appearing in the field; advantageous to see great men."
+      "Positive III.  Honourable men employ themselves assiduously all day long, and are wide awake from morning to evening.  Though dangerous, yet free from blame."
+      "Positive IV.  The dragon is as if he were leaping, but in the deep.  Free from blame."
+      "Positive V.  The dragon has flown up into the heaven.  Advantageous to see great men."
+      "Positive VI.  The dragon is in a state of excesses; and is beset with remorse."
+      "The Mode of Using the Positives.  Lucky, if all the dragons are so humble as if they had no heads."
+    ]
+  },
+// Copy the above format for the remaining 63 hexagrams
 ----
 
-You *must* fill out the data for all 64 hexagrams or
+*NOTE:*
+
+* You *must* fill out the data for *all* 64 hexagrams or
 the program will complain at you.
+* You *must* follow the
+link:https://en.wikipedia.org/wiki/List_of_hexagrams_of_the_I_Ching[King Wen order]
+in your translation file or the wrong information about
+the wrong hexagrams will be displayed.
 
-=== `geomancer`: use Geomancy for divination
+=== `geomancy`: use Geomancy for divination
 [source, bash]
-go install github.com/via-dev/oracle/cmd/geomancer@latest
+odin build geomancy -o:speed
 
-Similar to the above module the `geomancer` module is a CLI
+Similar to the above module the `geomancy` module is a CLI
 frontend for geomancy divination in the terminal. It will
 generate a random Shield Chart when no arguments are passed.
 
 It can take four optional arguments for each of the
-Four Mothers and each one must formatted as either four
-digit binary numbers (`1101`, `1001`, `1111`, etc) or as
-four strings with either `:` and `.` characters
-(`..:.`,`:..:`,`....`, etc).
-
-=== `biblio`: random nonsense text for bibliomancy
-[source, bash]
-go install github.com/via-dev/oracle/cmd/biblio@latest
-
-The `biblio` module generates plain text "books" of random characters
-in a manner inspired by the Library of Babel project. It contains only
-two flags of note: `-f`/`--files` and `-s`/`--scribd`. The former creates books
-from a list (`book1.txt,book2.txt,book3.txt`) and the latter will create five
-books to help with Scribd's "Upload five documents to download for free" gimmick.
+Four Mothers and each one must formatted as four bit
+binary numbers (`1101`, `1001`, `1111`, etc).

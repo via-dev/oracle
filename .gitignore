@@ -1,2 +1,4 @@
 *.exe
 *.html
+*.go
+*.pdb

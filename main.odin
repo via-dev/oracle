@@ -15,11 +15,11 @@ main :: proc() {
 
 	switch os.args[1] {
 	case "geomancy":
-		geomancy.Execute(os.args[1:])
+		geomancy.execute(os.args[1:])
 	case "iching":
-		iching.Execute(os.args[1:])
+		iching.execute(os.args[1:])
 	case "solo":
-		solo.Execute(os.args[1:])
+		solo.execute(os.args[1:])
 	case:
 		fmt.eprintfln("Error: No command named \"%s\"", os.args[1])
 		os.exit(1)

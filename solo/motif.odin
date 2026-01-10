@@ -2,7 +2,7 @@ package solo
 
 import "core:fmt"
 
-Motif :: proc(args: []string) {
+motif :: proc(args: []string) {
 	yesnomaybe := [6]string{"No", "No", "Mixed, maybe", "Mixed, maybe", "Yes", "Yes"}
 
 	impact := [6]string {

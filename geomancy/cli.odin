@@ -11,7 +11,7 @@ geoFlags :: struct {
 	mother4: string `args:"pos=3"`,
 }
 
-Execute :: proc(args: []string) {
+execute :: proc(args: []string) {
 	gflags: geoFlags
 	flags.parse_or_exit(&gflags, args)
 	chart: Chart
@@ -21,22 +21,22 @@ Execute :: proc(args: []string) {
 
 	for i in 0 ..< 4 {
 		if margs[i] != "" {
-			mothers[i] = parseFigure(margs[i])
+			mothers[i] = parse_figure(margs[i])
 		} else {
-			mothers[i] = GetFigure()
+			mothers[i] = get_figure()
 		}
 	}
 
-	chart = GenChart(mothers)
-	PrintShield(chart)
+	chart = gen_chart(mothers)
+	print_shield(chart)
 }
 
 main :: proc() {
 	args := os.args
-	Execute(args)
+	execute(args)
 }
 
-parseFigure :: proc(fig: string) -> u8 {
+parse_figure :: proc(fig: string) -> u8 {
 	figure: u8
 
 	if len(fig) != 4 {

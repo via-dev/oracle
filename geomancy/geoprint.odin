@@ -5,7 +5,7 @@ import "core:strings"
 
 linstr := [2]string{"O   O", "  O  "}
 
-PrintShield :: proc(chart: Chart) {
+print_shield :: proc(chart: Chart) {
 	shield: strings.Builder
 	str := "Shield Chart\n"
 	strings.write_string(&shield, str)
@@ -15,19 +15,19 @@ PrintShield :: proc(chart: Chart) {
 	for i in 0 ..< 4 {
 		str = fmt.aprintf(
 			"| %s | %s | %s | %s ",
-			linstr[Index(chart.Daughters[3], i)],
-			linstr[Index(chart.Daughters[2], i)],
-			linstr[Index(chart.Daughters[1], i)],
-			linstr[Index(chart.Daughters[0], i)],
+			linstr[index(chart.Daughters[3], i)],
+			linstr[index(chart.Daughters[2], i)],
+			linstr[index(chart.Daughters[1], i)],
+			linstr[index(chart.Daughters[0], i)],
 		)
 		strings.write_string(&shield, str)
 
 		str = fmt.aprintf(
 			"| %s | %s | %s | %s |\n",
-			linstr[Index(chart.Mothers[3], i)],
-			linstr[Index(chart.Mothers[2], i)],
-			linstr[Index(chart.Mothers[1], i)],
-			linstr[Index(chart.Mothers[0], i)],
+			linstr[index(chart.Mothers[3], i)],
+			linstr[index(chart.Mothers[2], i)],
+			linstr[index(chart.Mothers[1], i)],
+			linstr[index(chart.Mothers[0], i)],
 		)
 		strings.write_string(&shield, str)
 	}
@@ -36,10 +36,10 @@ PrintShield :: proc(chart: Chart) {
 	for i in 0 ..< 4 {
 		str = fmt.aprintf(
 			"|     %s     |     %s     |     %s     |     %s     |\n",
-			linstr[Index(chart.Nieces[3], i)],
-			linstr[Index(chart.Nieces[2], i)],
-			linstr[Index(chart.Nieces[1], i)],
-			linstr[Index(chart.Nieces[0], i)],
+			linstr[index(chart.Nieces[3], i)],
+			linstr[index(chart.Nieces[2], i)],
+			linstr[index(chart.Nieces[1], i)],
+			linstr[index(chart.Nieces[0], i)],
 		)
 		strings.write_string(&shield, str)
 	}
@@ -48,8 +48,8 @@ PrintShield :: proc(chart: Chart) {
 	for i in 0 ..< 4 {
 		str = fmt.aprintf(
 			"|             %s             |             %s             |\n",
-			linstr[Index(chart.Lwitness, i)],
-			linstr[Index(chart.Rwitness, i)],
+			linstr[index(chart.Lwitness, i)],
+			linstr[index(chart.Rwitness, i)],
 		)
 		strings.write_string(&shield, str)
 	}
@@ -58,7 +58,7 @@ PrintShield :: proc(chart: Chart) {
 	for i in 0 ..< 4 {
 		str = fmt.aprintf(
 			"|                             %s                             |\n",
-			linstr[Index(chart.Judge, i)],
+			linstr[index(chart.Judge, i)],
 		)
 		strings.write_string(&shield, str)
 	}

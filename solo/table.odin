@@ -10,7 +10,7 @@ import "core:strings"
 
 import lua "vendor:lua/5.4"
 
-ReadTable :: proc(argument: string) {
+read_table :: proc(argument: string) {
 	cfg_dir, dir_err := os.user_config_dir(context.allocator)
 	if dir_err != nil {
 		log.fatal(dir_err)

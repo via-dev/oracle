@@ -2,7 +2,6 @@ package iching
 
 import "core:flags"
 import "core:fmt"
-import "core:log"
 import "core:os/os2"
 
 chingFlags :: struct {
@@ -19,10 +18,10 @@ chingFlags :: struct {
 
 main :: proc() {
 	args := os2.args
-	Execute(args)
+	execute(args)
 }
 
-Execute :: proc(args: []string) {
+execute :: proc(args: []string) {
 	cflags: chingFlags
 	flags.parse_or_exit(&cflags, args)
 
@@ -31,7 +30,8 @@ Execute :: proc(args: []string) {
 	if cflags.hexarg != "" {
 
 		if len(cflags.hexarg) != 6 {
-			log.fatalf("Invalid syntax in \"%s\": must be six digits long.\n", cflags.hexarg)
+			fmt.eprintfln("Invalid syntax in \"%s\": must be six digits long.", cflags.hexarg)
+			os2.exit(1)
 		}
 
 		for r, i in cflags.hexarg {
@@ -50,22 +50,23 @@ Execute :: proc(args: []string) {
 			num, valid := linmap[r]
 
 			if !valid {
-				log.fatalf(
-					"Invalid character in \"%s\": only 6, 7, 8 or 9 allowed.\n",
+				fmt.eprintfln(
+					"Invalid character in \"%s\": only 6, 7, 8 or 9 allowed.",
 					cflags.hexarg,
 				)
+				os2.exit(1)
 			}
 
 			hexagram.lines |= num << u8(i)
 			hexagram.changes |= cmap[r] << u8(i)
 		}
-		secondary = SecondaryHexagram(hexagram)
+		secondary = secondary_hexagram(hexagram)
 	} else {
 		methods := make(map[string]proc() -> Hexagram, 4)
-		methods[""] = YarrowStalk
-		methods["yarrow"] = YarrowStalk
-		methods["coins"] = ThreeCoins
-		methods["oneline"] = SingleLine
+		methods[""] = yarrow_stalk
+		methods["yarrow"] = yarrow_stalk
+		methods["coins"] = three_coins
+		methods["oneline"] = single_line
 
 		chosen: #type proc() -> Hexagram
 		valid: bool
@@ -84,14 +85,15 @@ Execute :: proc(args: []string) {
 		}
 
 		if !valid {
-			log.fatalf(
-				"Unknown method \"%s\": valid methods are \"yarrow\", \"coins\" and \"oneline\".\n",
+			fmt.eprintfln(
+				"Unknown method \"%s\": valid methods are \"yarrow\", \"coins\" and \"oneline\".",
 				cflags.hexarg,
 			)
+			os2.exit(1)
 		}
 
 		hexagram = chosen()
-		secondary = SecondaryHexagram(hexagram)
+		secondary = secondary_hexagram(hexagram)
 	}
 
 	info: Info
@@ -108,12 +110,15 @@ Execute :: proc(args: []string) {
 		info.hexagrams[i].lines = make([]string, 7)
 	}
 
+	if cflags.translation == "" && cflags.t == "" {
+		info = read_json("default")
+	}
 	if cflags.translation != "" || cflags.t != "" {
 		if cflags.translation != "" && cflags.t == "" {
-			info = ReadJson(cflags.translation)
+			info = read_json(cflags.translation)
 		}
 		if cflags.translation == "" && cflags.t != "" {
-			info = ReadJson(cflags.t)
+			info = read_json(cflags.t)
 		}
 	}
 
@@ -121,7 +126,7 @@ Execute :: proc(args: []string) {
 	if hexagram.changes != 0 {
 		fmt.print(":")
 		for i in 0 ..< 6 {
-			if Index(hexagram.changes, i) == 1 {
+			if index(hexagram.changes, i) == 1 {
 				fmt.printf("%d ", i + 1)
 			}
 		}
@@ -130,16 +135,16 @@ Execute :: proc(args: []string) {
 	fmt.print("\n\n")
 
 	if cflags.extended || cflags.e {
-		ExtendedDisplay(hexagram, secondary, ReversedHexagram(hexagram), AntiHexagram(hexagram))
+		extended_display(hexagram, secondary, reversed_hexagram(hexagram), anti_hexagram(hexagram))
 	} else {
-		HexDisplay(hexagram, info)
+		hex_display(hexagram, info)
 		if hexagram != secondary {
 			fmt.println("")
-			HexDisplay(secondary, info)
+			hex_display(secondary, info)
 		}
 	}
 
 	if cflags.ascending || cflags.a {
-		AscendingDisplay(hexagram, secondary)
+		ascending_display(hexagram, secondary)
 	}
 }

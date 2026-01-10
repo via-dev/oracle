@@ -26,13 +26,13 @@ tableFlags :: struct {
 	overflow:   [dynamic]string `hidden`,
 }
 
-Execute :: proc(args: []string) {
+execute :: proc(args: []string) {
 	switch args[1] {
 	case "dice":
 		dflags: diceFlags
 		flags.parse_or_exit(&dflags, args)
 		die := dflags.dice
-		dice, roll := parseDice(die)
+		dice, roll := parse_dice(die)
 		res: string = fmt.aprintf("%s: ", die)
 		if len(dice) > 0 {
 			res = strings.concatenate({res, "["})
@@ -54,20 +54,20 @@ Execute :: proc(args: []string) {
 		mflags: motifFlags
 		flags.parse_or_exit(&mflags, args)
 		flavors := strings.split(mflags.flavors, ",")
-		Motif(flavors)
+		motif(flavors)
 		os.exit(0)
 
 	case "table":
 		tflags: tableFlags
 		flags.parse_or_exit(&tflags, args)
-		ReadTable(tflags.table_name)
+		read_table(tflags.table_name)
 		os.exit(0)
 
 	case "recluse":
 		rflags: recluseFlags
 		flags.parse_or_exit(&rflags, args)
 		odds := rflags.odds
-		Recluse(odds)
+		recluse(odds)
 		os.exit(0)
 	}
 }
@@ -76,11 +76,11 @@ main :: proc() {
 	args := os.args
 
 	if len(args) > 1 {
-		Execute(os.args)
+		execute(os.args)
 	}
 }
 
-parseDice :: proc(die: string) -> (dice: [dynamic]int, rolled: int) {
+parse_dice :: proc(die: string) -> (dice: [dynamic]int, rolled: int) {
 	dieargs, err := strings.split(die, "d")
 
 	num := 1

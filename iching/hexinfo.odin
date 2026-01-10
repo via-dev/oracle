@@ -6,7 +6,6 @@ import "core:log"
 import os "core:os/os2"
 import "core:path/filepath"
 
-
 Info :: struct {
 	author:    string,
 	hexagrams: []struct {
@@ -27,15 +26,14 @@ Info :: struct {
 	},
 }
 
-
-ReadJson :: proc(filename: string) -> Info {
+read_json :: proc(filename: string) -> Info {
 	cfg_dir, dir_err := os.user_config_dir(context.allocator)
 	if dir_err != nil {
 		log.fatal(dir_err)
 	}
 
 	trans_dir := filepath.join({cfg_dir, "oracle", "iching"})
-	file_path := filepath.join({trans_dir, fmt.aprint(filename, ".json", sep = "")})
+	file_path := filepath.join({trans_dir, fmt.aprint(filename, ".cfg", sep = "")})
 
 	data, file_error := os.read_entire_file(file_path, context.allocator)
 	if file_error != nil && !os.exists(file_path) {
@@ -51,7 +49,7 @@ ReadJson :: proc(filename: string) -> Info {
 
 	// Load data from the json bytes directly to the struct
 	info: Info
-	unmarshal_err := json.unmarshal(data, &info, spec = .JSON5)
+	unmarshal_err := json.unmarshal(data, &info, spec = .MJSON)
 	if unmarshal_err != nil {
 		fmt.eprintln("Failed to unmarshal the file!")
 		fmt.eprintln(unmarshal_err)

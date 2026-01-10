@@ -2,7 +2,7 @@ package solo
 
 import "core:fmt"
 
-Recluse :: proc(odds: string) {
+recluse :: proc(odds: string) {
 	yesdie, nodie, odddie, verydie := d6(1), d6(1), d6(1), d6(1)
 
 	switch odds {

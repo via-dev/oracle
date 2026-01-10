@@ -1,4 +1,3 @@
-#+feature dynamic-literals
 package iching
 
 import "core:fmt"
@@ -17,17 +16,17 @@ TriInfo :: struct {
 
 hexlines := [2][2]string{{"===   ===", "=== X ==="}, {"=========", "====O===="}}
 
-HexDisplay :: proc(hexagram: Hexagram, info: Info) {
+hex_display :: proc(hexagram: Hexagram, info: Info) {
 	lines, changes := hexagram.lines, hexagram.changes
-	upper, lower := NameTrigrams(lines, TriInfo(info.trigrams))
+	upper, lower := name_trigrams(lines, TriInfo(info.trigrams))
 	hexinfo := info.hexagrams[hexnums[lines]]
 
 	fmt.println(hexinfo.name)
 
 	for i in 0 ..< 6 {
 		idx := 5 - i
-		line := Index(lines, idx)
-		change := Index(changes, idx)
+		line := index(lines, idx)
+		change := index(changes, idx)
 		str_builder: strings.Builder
 		strings.write_string(&str_builder, hexlines[line][change])
 		if idx == 4 {
@@ -42,7 +41,7 @@ HexDisplay :: proc(hexagram: Hexagram, info: Info) {
 	fmt.print("\n", hexinfo.judgement, "\n")
 
 	for i in 0 ..< 6 {
-		if Index(changes, i) == 1 {
+		if index(changes, i) == 1 {
 			fmt.println(hexinfo.lines[i])
 		}
 	}
@@ -52,11 +51,11 @@ HexDisplay :: proc(hexagram: Hexagram, info: Info) {
 	}
 }
 
-NameTrigrams :: proc(lines: u8, tri: TriInfo) -> (upper, lower: string) {
+name_trigrams :: proc(lines: u8, tri: TriInfo) -> (upper, lower: string) {
 	upper_num := (lines >> 3)
 	lower_num := (lines << 5) >> 5
 
-	trinames := make(map[u8]string)
+	trinames: [8]string
 	trinames[0b000] = tri.earth
 	trinames[0b001] = tri.thunder
 	trinames[0b010] = tri.water
@@ -68,22 +67,21 @@ NameTrigrams :: proc(lines: u8, tri: TriInfo) -> (upper, lower: string) {
 
 
 	upper, lower = trinames[upper_num], trinames[lower_num]
-	defer delete(trinames)
 	return
 }
 
-ExtendedDisplay :: proc(primary, secondary, reversed, anti: Hexagram) {
+extended_display :: proc(primary, secondary, reversed, anti: Hexagram) {
 	if primary != secondary {
 		changing := [2]string{" ", ">"}
 		fmt.println(" ANTIHEX  |  PRIMARY  | SECONDARY")
 		for i in 0 ..< 6 {
 			idx := (5 - i)
-			pline := Index(primary.lines, idx)
-			pchange := Index(primary.changes, idx)
-			sline := Index(secondary.lines, idx)
-			schange := Index(secondary.changes, idx)
-			aline := Index(anti.lines, idx)
-			achange := Index(anti.changes, idx)
+			pline := index(primary.lines, idx)
+			pchange := index(primary.changes, idx)
+			sline := index(secondary.lines, idx)
+			schange := index(secondary.changes, idx)
+			aline := index(anti.lines, idx)
+			achange := index(anti.changes, idx)
 			fmt.printf(
 				"%s %s %s %s %s\n",
 				hexlines[aline][0],
@@ -97,70 +95,70 @@ ExtendedDisplay :: proc(primary, secondary, reversed, anti: Hexagram) {
 
 		for i in 0 ..< 6 {
 			idx := 5 - i
-			rline := Index(reversed.lines, idx)
-			rchange := Index(reversed.changes, idx)
+			rline := index(reversed.lines, idx)
+			rchange := index(reversed.changes, idx)
 			fmt.printf("            %s\n", hexlines[rline][rchange])
 		}
 	} else {
 		fmt.println(" ANTIHEX  |  PRIMARY")
 		for i in 0 ..< 6 {
-			pline := Index(primary.lines, i)
-			pchange := Index(primary.changes, i)
-			aline := Index(anti.lines, i)
+			pline := index(primary.lines, i)
+			pchange := index(primary.changes, i)
+			aline := index(anti.lines, i)
 			fmt.printf("%s   %s\n", hexlines[aline][0], hexlines[pline][pchange])
 		}
 	}
 }
 
-AscendingDisplay :: proc(primary, secondary: Hexagram) {
+ascending_display :: proc(primary, secondary: Hexagram) {
 	fmt.println("Ascending Hexagrams")
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(secondary.lines, 0)][0],
-		hexlines[Index(secondary.lines, 1)][0],
-		hexlines[Index(secondary.lines, 2)][0],
-		hexlines[Index(secondary.lines, 3)][0],
-		hexlines[Index(secondary.lines, 4)][0],
+		hexlines[index(secondary.lines, 0)][0],
+		hexlines[index(secondary.lines, 1)][0],
+		hexlines[index(secondary.lines, 2)][0],
+		hexlines[index(secondary.lines, 3)][0],
+		hexlines[index(secondary.lines, 4)][0],
 	)
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(primary.lines, 5)][0],
-		hexlines[Index(secondary.lines, 0)][0],
-		hexlines[Index(secondary.lines, 1)][0],
-		hexlines[Index(secondary.lines, 2)][0],
-		hexlines[Index(secondary.lines, 3)][0],
+		hexlines[index(primary.lines, 5)][0],
+		hexlines[index(secondary.lines, 0)][0],
+		hexlines[index(secondary.lines, 1)][0],
+		hexlines[index(secondary.lines, 2)][0],
+		hexlines[index(secondary.lines, 3)][0],
 	)
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(primary.lines, 4)][0],
-		hexlines[Index(primary.lines, 5)][0],
-		hexlines[Index(secondary.lines, 0)][0],
-		hexlines[Index(secondary.lines, 1)][0],
-		hexlines[Index(secondary.lines, 2)][0],
+		hexlines[index(primary.lines, 4)][0],
+		hexlines[index(primary.lines, 5)][0],
+		hexlines[index(secondary.lines, 0)][0],
+		hexlines[index(secondary.lines, 1)][0],
+		hexlines[index(secondary.lines, 2)][0],
 	)
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(primary.lines, 3)][0],
-		hexlines[Index(primary.lines, 4)][0],
-		hexlines[Index(primary.lines, 5)][0],
-		hexlines[Index(secondary.lines, 0)][0],
-		hexlines[Index(secondary.lines, 1)][0],
+		hexlines[index(primary.lines, 3)][0],
+		hexlines[index(primary.lines, 4)][0],
+		hexlines[index(primary.lines, 5)][0],
+		hexlines[index(secondary.lines, 0)][0],
+		hexlines[index(secondary.lines, 1)][0],
 	)
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(primary.lines, 2)][0],
-		hexlines[Index(primary.lines, 3)][0],
-		hexlines[Index(primary.lines, 4)][0],
-		hexlines[Index(primary.lines, 5)][0],
-		hexlines[Index(secondary.lines, 0)][0],
+		hexlines[index(primary.lines, 2)][0],
+		hexlines[index(primary.lines, 3)][0],
+		hexlines[index(primary.lines, 4)][0],
+		hexlines[index(primary.lines, 5)][0],
+		hexlines[index(secondary.lines, 0)][0],
 	)
 	fmt.printf(
 		"%s > %s > %s > %s > %s\n",
-		hexlines[Index(primary.lines, 1)][0],
-		hexlines[Index(primary.lines, 2)][0],
-		hexlines[Index(primary.lines, 3)][0],
-		hexlines[Index(primary.lines, 4)][0],
-		hexlines[Index(primary.lines, 5)][0],
+		hexlines[index(primary.lines, 1)][0],
+		hexlines[index(primary.lines, 2)][0],
+		hexlines[index(primary.lines, 3)][0],
+		hexlines[index(primary.lines, 4)][0],
+		hexlines[index(primary.lines, 5)][0],
 	)
 }
 
@@ -178,7 +176,7 @@ I cannot use a hexagrams uint number to index
 into the slice of hexagrams returned by the lua
 file, because the order of elements will not match.
 
-Therefore, the large map below is used to turn
+Therefore, the large array below is used to turn
 the hexagram's uint number into the actual slice
 index and thus get the correct info dump to be
 displayed.
@@ -187,7 +185,7 @@ Key: Actual hexagram binary
 Value: Corresponding slice index
 */
 
-hexnums := map[u8]int {
+hexnums := [64]int {
 	0b111111 = 1 - 1,
 	0b000000 = 2 - 1,
 	0b010001 = 3 - 1,

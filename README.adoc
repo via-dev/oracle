@@ -40,7 +40,7 @@ In order to use the `table` command you must setup your own lua table files in
 the following locations:
 
 * *Windows*: `%USERPROFILE%\AppData\Local\oracle\tables`
-* *Unix & Mac*: `~/.config/oracle/tables`
+* *Linux*: `~/.config/oracle/tables`
 
 Your lua files must contain at least one global function called `main`.
 You can then run `tables <filename>` to execute the code contained in
@@ -144,12 +144,14 @@ this primary hexagram will be used.
 * `oneline`: get hexagrams with a single moving line.
 
 The `-t` or `--translation` flag allows you to choose which translation
-to use for hexagram information. A translation file is a JSON, JSON5 or MJSON file
-that contains a table with all the information text for each hexagram.
+to use for hexagram information. A translation file is a JSON, JSON5 or MJSON
+file with a `.trans` extension that contains a table with all the information
+text for each hexagram.
+
 The program will look for translation files in these locations:
 
 * *Windows*: `%USERPROFILE%\AppData\Local\oracle\iching`
-* *Unix & Mac*: `~/.config/oracle/iching`
+* *Linux*: `~/.config/oracle/iching`
 
 Your translation file should follow this format:
 

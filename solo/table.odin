@@ -1,10 +1,9 @@
 package solo
 
-
 import "base:runtime"
 import "core:fmt"
 import "core:log"
-import os "core:os/os2"
+import "core:os"
 import "core:path/filepath"
 import "core:strings"
 
@@ -32,8 +31,11 @@ read_table :: proc(argument: string) {
 		func_name = table_fn
 	}
 
-	tables_dir := filepath.join({cfg_dir, "oracle", "tables"})
-	file_path := filepath.join({tables_dir, strings.concatenate({filename, ".lua"})})
+	tables_dir, _ := filepath.join({cfg_dir, "oracle", "tables"}, context.allocator)
+	file_path, _ := filepath.join(
+		{tables_dir, strings.concatenate({filename, ".lua"})},
+		context.allocator,
+	)
 
 	script_data, file_error := os.read_entire_file(file_path, context.allocator)
 	if file_error != nil && !os.exists(file_path) {

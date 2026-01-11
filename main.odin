@@ -1,7 +1,7 @@
 package main
 
 import "core:fmt"
-import os "core:os/os2"
+import "core:os"
 
 import "./geomancy"
 import "./iching"
@@ -20,6 +20,9 @@ main :: proc() {
 		iching.execute(os.args[1:])
 	case "solo":
 		solo.execute(os.args[1:])
+	case "help":
+		fmt.print(USAGE)
+		os.exit(0)
 	case:
 		fmt.eprintfln("Error: No command named \"%s\"", os.args[1])
 		os.exit(1)

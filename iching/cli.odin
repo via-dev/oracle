@@ -2,7 +2,7 @@ package iching
 
 import "core:flags"
 import "core:fmt"
-import "core:os/os2"
+import "core:os"
 
 chingFlags :: struct {
 	hexarg:      string `args:"pos=0" usage:"Hexagram code."`,
@@ -17,7 +17,7 @@ chingFlags :: struct {
 }
 
 main :: proc() {
-	args := os2.args
+	args := os.args
 	execute(args)
 }
 
@@ -31,7 +31,7 @@ execute :: proc(args: []string) {
 
 		if len(cflags.hexarg) != 6 {
 			fmt.eprintfln("Invalid syntax in \"%s\": must be six digits long.", cflags.hexarg)
-			os2.exit(1)
+			os.exit(1)
 		}
 
 		for r, i in cflags.hexarg {
@@ -54,7 +54,7 @@ execute :: proc(args: []string) {
 					"Invalid character in \"%s\": only 6, 7, 8 or 9 allowed.",
 					cflags.hexarg,
 				)
-				os2.exit(1)
+				os.exit(1)
 			}
 
 			hexagram.lines |= num << u8(i)
@@ -89,7 +89,7 @@ execute :: proc(args: []string) {
 				"Unknown method \"%s\": valid methods are \"yarrow\", \"coins\" and \"oneline\".",
 				cflags.hexarg,
 			)
-			os2.exit(1)
+			os.exit(1)
 		}
 
 		hexagram = chosen()

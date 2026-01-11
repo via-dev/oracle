@@ -2,7 +2,7 @@ package geomancy
 
 import "core:flags"
 import "core:fmt"
-import os "core:os/os2"
+import "core:os"
 
 geoFlags :: struct {
 	mother1: string `args:"pos=0"`,

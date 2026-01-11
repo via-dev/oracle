@@ -3,7 +3,7 @@ package iching
 import "core:encoding/json"
 import "core:fmt"
 import "core:log"
-import os "core:os/os2"
+import "core:os"
 import "core:path/filepath"
 
 Info :: struct {
@@ -32,8 +32,11 @@ read_json :: proc(filename: string) -> Info {
 		log.fatal(dir_err)
 	}
 
-	trans_dir := filepath.join({cfg_dir, "oracle", "iching"})
-	file_path := filepath.join({trans_dir, fmt.aprint(filename, ".trans", sep = "")})
+	trans_dir, _ := filepath.join({cfg_dir, "oracle", "iching"}, context.allocator)
+	file_path, _ := filepath.join(
+		{trans_dir, fmt.aprint(filename, ".trans", sep = "")},
+		context.allocator,
+	)
 
 	data, file_error := os.read_entire_file(file_path, context.allocator)
 	if file_error != nil && !os.exists(file_path) {
